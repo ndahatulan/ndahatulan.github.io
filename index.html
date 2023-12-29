@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<title>Scripter</title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+	<style>
+		.bd-placeholder-img {
+			font-size: 1.125rem;
+			text-anchor: middle;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			user-select: none;
+		}
+
+		@media (min-width: 768px) {
+			.bd-placeholder-img-lg {
+				font-size: 3.5rem;
+			}
+		}
+	  
+		html,
+		body {
+		  height: 100%;
+		}
+
+		body {
+		  #display: flex;
+		  width: 1200px;
+		  align-items: center;
+		  padding-top: 5px;
+		  padding-bottom: 40px;
+		  background-color: #f5f5f5;
+		}
+
+		#floatingInput {
+			/*width: 50%;*/
+			height: 600px;
+
+			
+		}
+		
+		#result {
+			/*width: 50%;*/
+			height: 600px;
+
+			
+		}
+
+		.item1 { grid-area: left; }
+		.item2 { grid-area: right; }
+		.item3 { grid-area: footerleft; }
+		.item4 { grid-area: footerright; }
+
+		.grid-container {
+		  display: grid;
+		  grid-template-areas:
+			'left left right right'
+			'left left right right'
+			'footerleft footerleft footerright footerright';
+		  gap: 10px;
+		  padding: 10px;
+		}
+
+		.grid-container > div {
+		  text-align: left;
+		  padding: 20px 0;
+		  font-size: 10px;
+		}
+
+		.pad1 {
+			padding: 1px 1px;
+			font-size: 12px;
+			width: 200px;
+		}
+
+	</style>
+
+</head>
+<body>
+	<div class="grid-container">
+		<div class="item1">
+			<h4> Teraterm </h4>
+			<div class="form-group row">
+				<label for="logdir" class="col-sm-3 col-form-label">Log Directory Output</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control pad1" id="logdir">
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="filename" class="col-sm-3 col-form-label">File Name Output</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control pad1" id="filename" >
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label for="intervalTT" class="col-sm-3 col-form-label">Interval (sec)</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control pad1" id="intervalTT">
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<div class="col-sm-11">
+				  <button type="button" class="btn btn-secondary" onclick="generateTTScript()">Generate</button>
+				</div>
+			</div>
+		  
+		  
+		</div>
+		<div class="item2">
+			<h4> Auto Script </h4>
+			<div class="form-group row">
+				<label for="scriptName" class="col-sm-3 col-form-label">Script Name</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control pad1" id="scriptName" >
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="interval" class="col-sm-3 col-form-label">Interval (sec)</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control pad1" id="interval">
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label for="repeat" class="col-sm-3 col-form-label">Repeat</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control pad1" id="repeat">
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label for="start" class="col-sm-3 col-form-label">Start</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control pad1" id="start"  >
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label for="outputSize" class="col-sm-3 col-form-label">Output size (MB)</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control pad1" id="outputSize" >
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<div class="col-sm-11">
+					<button type="button" class="btn btn-secondary" onclick="generateASScript()">Generate</button>
+				</div>
+			</div>
+			
+			
+		</div>
+			
+		<div class="item3" >
+			<h5 style="height: 38px" > Fortigate Commands </h5>
+			<textarea class="form-control" id="floatingInput" rows="4"></textarea>
+		</div>
+
+		<div class="item4" >
+			<h5 > Result 
+				<button type="button" class="btn btn-secondary" onclick="copyToCB()">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+					  <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"></path>
+					  <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"></path>
+					</svg>
+				</button>
+				<button type="button" class="btn btn-secondary" onclick="dlResult()">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+					  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"></path>
+					  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"></path>
+					</svg>
+			  </button>
+			 </h5>
+			<textarea class="form-control" id="result" rows="4"></textarea>
+		</div>
+	</div>
+	
+
+	  <div class="text-dark p-2">
+		v1
+	  </div>
+  
+	<script>
+	let savedSettings = {
+		TT_logdir: "C:\\Users\\",
+		TT_filename : "FGT_EAST",
+		TT_intervalTT : "300",
+		AS_scriptName : "high_something",
+		AS_interval : "300",
+		AS_repeat : "0",
+		AS_start : "auto",
+		AS_outputSize : "10",
+		floatingInput : "get sys status\nget sys performance status #3\ndiag sniffer packet any none 4 0 l #10 c\ndiag sys top #10 q"
+	}
+	let dlflag = 0
+	
+	if (localStorage.getItem("savedSettings") === null) {
+		window.localStorage.setItem("savedSettings", JSON.stringify(savedSettings))
+	}
+	else {
+		savedSettings = JSON.parse(window.localStorage.getItem("savedSettings"))
+
+	}
+	
+	document.getElementById('logdir').value = savedSettings.TT_logdir
+	document.getElementById('filename').value = savedSettings.TT_filename
+	document.getElementById('intervalTT').value = savedSettings.TT_intervalTT
+	document.getElementById('scriptName').value = savedSettings.AS_scriptName
+	document.getElementById('interval').value = savedSettings.AS_interval
+	document.getElementById('repeat').value = savedSettings.AS_repeat
+	document.getElementById('start').value  = savedSettings.AS_start
+	document.getElementById('outputSize').value  = savedSettings.AS_outputSize
+	document.getElementById('floatingInput').value  = savedSettings.floatingInput
+		
+		
+	function generateTTScript() {
+		let script = ';User Settings===================================\n'
+		let $logdir = document.getElementById("logdir").value
+		let $logfile = document.getElementById("filename").value
+		let $interval = document.getElementById("intervalTT").value
+		let endDelay = 0
+		
+		script += 'logdirectory = \'' + $logdir + '\'\n'
+		script += 'filename = \'' + $logfile + '-%Y%m%d-%H%M%S.txt\'\n'
+		script += ';================================================\n\n'
+		script += 'pause 2\n'
+		script += 'changedir logdirectory\n'
+		script += 'getdate logfile filename\n'
+		script += 'logopen logfile 0 1 0 0 1\n'
+		script += ':INIT\n'
+		script += 'count=1\n'
+		script += 'logrotate \'size\' \'5M\' \n'
+		script += 'pause 3\n'
+		script += 'goto commands\n\n'
+		script += ':commands\n'
+
+		//Generated commands
+		let floatingInput = document.getElementById('floatingInput').value
+		const rawcommandsArr =  floatingInput.split('\n')
+		let totalPause = 0
+
+		for (var i = 0; i < rawcommandsArr.length; i++) { // each line extract #delay
+			let splittedArr = rawcommandsArr[i].split('#')
+			
+			script = script + 'sendln \'' + splittedArr[0].trim() + '\'\n' //Add actual command
+			
+			let splittedArrRight = splittedArr[1]
+			
+			if (splittedArrRight != null) {
+				if (splittedArrRight.length > 0) {
+					let pauseValue = splittedArrRight.split(' ')[0] //Get pause value #value
+					script = script + 'pause ' + pauseValue + '\n'
+					totalPause += parseInt(pauseValue)
+				}
+				
+				if (splittedArrRight.length > 1) {
+					let option = splittedArrRight.split(' ')[1] //Get crl+c or q
+					if (option == 'c') {
+						script = script + 'send #3\n'
+					}
+					else if (option == 'q') {
+						script = script + 'sendln \'q\'\n'
+					}
+					
+				}
+				
+			}
+			else {
+				script += 'pause 1\n'
+				totalPause++
+			}
+		
+		}
+		
+
+		endDelay = parseInt($interval) - totalPause
+		console.log('totalPause:' + totalPause )
+		console.log('endDelay:' + endDelay )
+		if(endDelay >= 0) {
+			script += '\npause ' + endDelay + '\n' //End delay here
+		}
+			
+		script += '; Pause seconds before it loop\n\n'
+		script += 'call looping\n'
+		script += 'goto commands\n'
+		script += 'return\n\n'
+		script += ':looping\n'
+		script += 'if count > 100000 then\n'
+		script += '  end\n'
+		script += 'else\n'
+		script += ' count=count+1\n'
+		script += ' return\n'
+		script += 'endif\n'
+
+		//console.log('------------------------' )
+		//console.log('Teraterm Final Script:\n' + script )
+		document.getElementById('result').value = script
+		dlflag = 0; //Teraterm script ttl extension
+		saveSettings()
+
+	}
+	
+	function generateASScript() {
+		let script = ''
+		
+		let scriptName = document.getElementById('scriptName').value
+		let interval = document.getElementById('interval').value
+		let repeat = document.getElementById('repeat').value
+		let start = document.getElementById('start').value
+		let outputSize = document.getElementById('outputSize').value
+		
+		
+		let floatingInput = document.getElementById('floatingInput').value
+		
+		const rawcommandsArr =  floatingInput.split('\n')
+		
+		script += 'config system auto-script\n'
+		script += ' edit ' + scriptName + '\n'
+		script += '  set interval ' + interval + '\n'
+		script += '  set repeat ' + repeat + '\n'
+		script += '  set start ' + start + '\n'
+		script += '  set output-size ' + outputSize + '\n'
+		script += '  set script \"\n'
+
+		for (var i = 0; i < rawcommandsArr.length; i++) { // each line extract #delay
+			let splittedArr = rawcommandsArr[i].split('#')
+			
+			//console.log('splittedArr: ' + splittedArr )
+			if (splittedArr[0] != null) {
+				script = script + splittedArr[0].trim() + '\n' //Add actual command
+			}
+	
+		}
+		script += '\"\n'
+		script += ' next\n'
+		script += 'end\n'
+		
+		//console.log('------------------------' )
+		//console.log('Final AS script:\n' + script )
+
+		document.getElementById('result').value = script
+		dlflag = 1; //Autoscript ttl extension
+		saveSettings()
+	}
+	
+	function saveSettings() {
+		savedSettings.TT_logdir = document.getElementById('logdir').value
+		savedSettings.TT_filename = document.getElementById('filename').value
+		savedSettings.TT_intervalTT = document.getElementById('intervalTT').value
+		savedSettings.AS_scriptName = document.getElementById('scriptName').value
+		savedSettings.AS_interval = document.getElementById('interval').value
+		savedSettings.AS_repeat = document.getElementById('repeat').value
+		savedSettings.AS_start = document.getElementById('start').value
+		savedSettings.AS_outputSize = document.getElementById('outputSize').value
+		savedSettings.floatingInput = document.getElementById('floatingInput').value
+		
+		window.localStorage.setItem("savedSettings", JSON.stringify(savedSettings))	
+	}
+	
+	function copyToCB() {
+		let resultCommands = document.getElementById('result').value
+		navigator.clipboard.writeText(resultCommands)
+	}
+	
+	function dlResult(){
+		let resultCommands = document.getElementById('result').value
+		download(resultCommands)
+	}
+	
+	function download(text) {
+		let element = document.createElement('a');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		if (dlflag == 0) {//Teraterm
+			element.setAttribute('download', 'Script.ttl');
+		}
+		
+		else {
+			element.setAttribute('download', 'Script.txt');
+		}
+		element.style.display = 'none';
+		document.body.appendChild(element);
+		element.click();
+		document.body.removeChild(element);
+	}
+
+	</script>
+</body>
+</html>
