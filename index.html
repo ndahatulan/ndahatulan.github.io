@@ -241,7 +241,7 @@
 		script += 'logopen logfile 0 1 0 0 1\n'
 		script += ':INIT\n'
 		script += 'count=1\n'
-		script += 'logrotate \'size\' \'5M\' \n'
+		script += 'logrotate \'size\' \'200M\' \n'
 		script += 'pause 3\n'
 		script += 'goto commands\n\n'
 		script += ':commands\n'
