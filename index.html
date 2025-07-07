@@ -196,7 +196,7 @@
 	
 
 	  <div class="text-dark p-2">
-		v1
+		v2.2
 	  </div>
   
 	<script>
@@ -284,39 +284,43 @@
 		for (var i = 0; i < rawcommandsArr.length; i++) { // each line extract #delay
 			let splittedArr = rawcommandsArr[i].split('#')
 			
-			script = script + 'sendln \'' + splittedArr[0].trim() + '\'\n' //Add actual command
-			let splittedArrRight = splittedArr[1]
+			if (!(/^\s*$/.test(splittedArr))) { // No next line, white spaces and tab detected
+				//console.log('No next line detected')
+
 			
-			if (splittedArrRight != null) {
-				if (splittedArrRight.length > 0) {
-					let pauseValue = splittedArrRight.split(' ')[0] //Get pause value #value
-					script = script + 'pause ' + pauseValue + '\n'
-					totalPause += parseInt(pauseValue)
-				}
+				script = script + 'sendln \'' + splittedArr[0].trim() + '\'\n' //Add actual command
+				let splittedArrRight = splittedArr[1]
 				
-				if (splittedArrRight.length > 1) {
-					let option = splittedArrRight.split(' ')[1] //Get crl+c or q
-					if (option == 'c') {
-						script = script + 'send #3\n'
+				if (splittedArrRight != null) {
+					if (splittedArrRight.length > 0) {
+						let pauseValue = splittedArrRight.split(' ')[0] //Get pause value #value
+						script = script + 'pause ' + pauseValue + '\n'
+						totalPause += parseInt(pauseValue)
 					}
-					else if (option == 'q') {
-						script = script + 'sendln \'q\'\n'
+					
+					if (splittedArrRight.length > 1) {
+						let option = splittedArrRight.split(' ')[1] //Get crl+c or q
+						if (option == 'c') {
+							script = script + 'send #3\n'
+						}
+						else if (option == 'q') {
+							script = script + 'sendln \'q\'\n'
+						}
+						
 					}
 					
 				}
-				
+				else {
+					script += 'pause 1\n'
+					totalPause++
+				}
 			}
-			else {
-				script += 'pause 1\n'
-				totalPause++
-			}
-		
 		}
 		
 
 		endDelay = parseInt($interval) - totalPause
-		console.log('totalPause:' + totalPause )
-		console.log('endDelay:' + endDelay )
+		//console.log('totalPause:' + totalPause )
+		//console.log('endDelay:' + endDelay )
 		if(endDelay >= 0) {
 			script += '\npause ' + endDelay + '\n' //End delay here
 		}
