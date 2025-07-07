@@ -110,6 +110,13 @@
 			</div>
 			
 			<div class="form-group row">
+				<label for="standardoutput" class="col-sm-3 col-form-label">Output Standard</label>
+				<div class="col-sm-6">
+					<input class="form-check-input" type="checkbox" value="" id="standardoutput" checked>
+				</div>
+			</div>
+			
+			<div class="form-group row">
 				<div class="col-sm-11">
 				  <button type="button" class="btn btn-secondary" onclick="generateTTScript()">Generate</button>
 				</div>
@@ -197,6 +204,7 @@
 		TT_logdir: "C:\\Users\\",
 		TT_filename : "FGT_EAST",
 		TT_intervalTT : "300",
+		TT_standardoutput : true,
 		AS_scriptName : "high_something",
 		AS_interval : "300",
 		AS_repeat : "0",
@@ -217,6 +225,12 @@
 	document.getElementById('logdir').value = savedSettings.TT_logdir
 	document.getElementById('filename').value = savedSettings.TT_filename
 	document.getElementById('intervalTT').value = savedSettings.TT_intervalTT
+	if(savedSettings.TT_standardoutput) {
+		document.getElementById('standardoutput').checked = true
+	}
+	else {
+		document.getElementById('standardoutput').checked = false
+	}
 	document.getElementById('scriptName').value = savedSettings.AS_scriptName
 	document.getElementById('interval').value = savedSettings.AS_interval
 	document.getElementById('repeat').value = savedSettings.AS_repeat
@@ -226,36 +240,48 @@
 		
 		
 	function generateTTScript() {
-		let script = ';User Settings===================================\n'
+		let script = ';User Settings ==============================\n'
 		let $logdir = document.getElementById("logdir").value
 		let $logfile = document.getElementById("filename").value
 		let $interval = document.getElementById("intervalTT").value
 		let endDelay = 0
 		
+		//Generated commands
+		let floatingInput = document.getElementById('floatingInput').value
+		const rawcommandsArr =  floatingInput.split('\n')
+		let totalPause = 0
+		let commandsEntered = ''
+		
+		for (var i = 0; i < rawcommandsArr.length; i++) { // each line extract #delay
+			commandsEntered += rawcommandsArr[i] + '\n'
+		
+		}
+		
 		script += 'logdirectory = \'' + $logdir + '\'\n'
 		script += 'filename = \'' + $logfile + '-%Y%m%d-%H%M%S.txt\'\n'
-		script += ';================================================\n\n'
+		script += ';============================================\n\n'
+		
+		script += '/*\nCommands Entered:\n==============================\n'
+		script += commandsEntered
+		script += '==============================\n\*/\n\n'
 		script += 'pause 2\n'
 		script += 'changedir logdirectory\n'
 		script += 'getdate logfile filename\n'
 		script += 'logopen logfile 0 1 0 0 1\n'
 		script += ':INIT\n'
 		script += 'count=1\n'
-		script += 'logrotate \'size\' \'200M\' \n'
-		script += 'pause 3\n'
+		script += 'logrotate \'size\' \'5M\' \n'
+		script += 'pause 2\n\n'
+		script += 'config system console\n set output standard\nend\npause 1\n\n'
 		script += 'goto commands\n\n'
 		script += ':commands\n'
 
-		//Generated commands
-		let floatingInput = document.getElementById('floatingInput').value
-		const rawcommandsArr =  floatingInput.split('\n')
-		let totalPause = 0
 
+		
 		for (var i = 0; i < rawcommandsArr.length; i++) { // each line extract #delay
 			let splittedArr = rawcommandsArr[i].split('#')
 			
 			script = script + 'sendln \'' + splittedArr[0].trim() + '\'\n' //Add actual command
-			
 			let splittedArrRight = splittedArr[1]
 			
 			if (splittedArrRight != null) {
@@ -365,7 +391,12 @@
 		savedSettings.AS_start = document.getElementById('start').value
 		savedSettings.AS_outputSize = document.getElementById('outputSize').value
 		savedSettings.floatingInput = document.getElementById('floatingInput').value
-		
+		if(document.getElementById('standardoutput').checked) {
+			savedSettings.TT_standardoutput = true
+		}
+		else {
+			savedSettings.TT_standardoutput = false
+		}
 		window.localStorage.setItem("savedSettings", JSON.stringify(savedSettings))	
 	}
 	
