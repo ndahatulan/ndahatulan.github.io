@@ -272,7 +272,10 @@
 		script += 'count=1\n'
 		script += 'logrotate \'size\' \'5M\' \n'
 		script += 'pause 2\n\n'
-		script += 'config system console\n set output standard\nend\npause 1\n\n'
+		script += 'sendln \'config system console\'\n'
+		script += 'sendln \'set output standard\'\n'
+		script += 'sendln \'end\'\n'
+		script += 'pause 1\n\n'
 		script += 'goto commands\n\n'
 		script += ':commands\n'
 
